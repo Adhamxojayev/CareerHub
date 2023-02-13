@@ -6,7 +6,6 @@ import Job from "./jobs.js";
 
 Employer.hasMany(Job, {
   foreignKey: "employerId",
-  onDelete: "cascade",
 });
 
 Job.belongsTo(Employer, {
@@ -16,7 +15,6 @@ Job.belongsTo(Employer, {
 
 Worker.hasMany(Application, {
   foreignKey: "workerId",
-  onDelete: "cascade",
 });
 
 Application.belongsTo(Worker, {
@@ -26,7 +24,6 @@ Application.belongsTo(Worker, {
 
 Job.hasMany(Application, {
   foreignKey: "jobId",
-  onDelete: "cascade",
 });
 
 Application.belongsTo(Job, {

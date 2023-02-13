@@ -7,6 +7,9 @@ const Worker = sequelize.define(
     name: {
       type: DataTypes.STRING(128),
       allowNull: false,
+      unique: {
+        msg: "worker this name exists",
+      },
     },
     email: {
       type: DataTypes.STRING(128),
@@ -21,6 +24,7 @@ const Worker = sequelize.define(
         isAlphanumeric: true,
         min: 8,
       },
+      allowNull: false,
     },
     resume: {
       type: DataTypes.TEXT,
