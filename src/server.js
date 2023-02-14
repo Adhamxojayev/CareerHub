@@ -4,6 +4,7 @@ import "./models/index.js";
 
 // employer router
 import employer from "./routers/employer.router.js";
+import application from "./routers/application.router.js";
 import worker from "./routers/worker.router.js";
 import jobs from "./routers/jobs.router.js";
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api", employer);
 app.use("/api", jobs);
 app.use('/api', worker);
+app.use("/api", application)
 
 
 // error handler

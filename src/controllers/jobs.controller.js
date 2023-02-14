@@ -11,10 +11,15 @@ const GET = async (req, res, next) => {
 
 const POST = async (req, res, next) => {
   try {
-    req.body.employerId = req.employerId;
-    const job = await Job.create(req.body);
-    
-    res.status(200).json(job);
+    const { id, role } = req.user;
+    if(role === 'employer'){
+      req.body.employerId = id;
+      const job = await Job.create(req.body);
+
+      return res.status(200).json(job);
+    }else{
+      throw new Error("You do not have the required role to add a job")
+    }
   } catch (error) {
     return next(error);
   }

@@ -37,7 +37,7 @@ const REGISTER = async (req, res, next) => {
     res.status(201).json({
       status: 201,
       message: "you are registered",
-      access_token: jwt.sign({ workerId: worker.id }),
+      access_token: jwt.sign({ id: worker.id, role: 'worker' }),
     });
   } catch (error) {
     return next(error);
@@ -60,7 +60,7 @@ const LOGIN = async (req, res, next) => {
     res.status(200).json({
       status: 200,
       message: "You have successfully logged in",
-      access_token: jwt.sign({ workerId: worker.id }),
+      access_token: jwt.sign({ id: worker.id, role: 'worker' }),
     });
   } catch (error) {
     return next(error);

@@ -1,22 +1,24 @@
-import jwt from '../utils/jwt.js'
+import jwt from "../utils/jwt.js";
 
 export default (req, res, next) => {
   try {
-    const { token } = req.headers
-    if(!token){
-      throw new Error('token required')
+    const { token } = req.headers;
+    if (!token) {
+      throw new Error("token required");
     }
 
-    const { employerId } = jwt.verify(token)
+    const user = jwt.verify(token);
     
-    if(!employerId){
-      throw new Error('Forbidden')
+    if (!user.id) {
+      throw new Error("Unauthorized");
     }
 
-    req.employerId = employerId
+    req.user = user;
 
-    next()
+    next();
   } catch (error) {
-    return next(error)
+    return res
+    .status(403)
+    .json({ error: error.message });
   }
-}
+};
