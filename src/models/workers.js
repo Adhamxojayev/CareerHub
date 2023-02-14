@@ -1,5 +1,7 @@
 import sequelize from "../utils/sequelize.js";
 import { DataTypes } from "sequelize";
+import bcrypt from "bcrypt";
+
 
 const Worker = sequelize.define(
   "Worker",
@@ -35,5 +37,13 @@ const Worker = sequelize.define(
     tableName: "workers",
   }
 );
+
+Worker.beforeCreate(async (employer) => {
+  employer.password = await bcrypt.hash(employer.password, 10);
+});
+
+Worker.prototype.validPassword = function (password) {
+  return bcrypt.compareSync(password, this.password);
+};
 
 export default Worker;

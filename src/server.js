@@ -4,7 +4,8 @@ import "./models/index.js";
 
 // employer router
 import employer from "./routers/employer.router.js";
-import jobs from "./routers/jobs.router.js"
+import worker from "./routers/worker.router.js";
+import jobs from "./routers/jobs.router.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 // routers are merging
 app.use("/api", employer);
 app.use("/api", jobs);
+app.use('/api', worker);
 
 
 // error handler
