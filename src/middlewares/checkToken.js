@@ -2,13 +2,14 @@ import jwt from "../utils/jwt.js";
 
 export default (req, res, next) => {
   try {
-    const { token } = req.headers;
-    if (!token) {
+    const { authorization } = req.headers;
+
+    if (!authorization) {
       throw new Error("token required");
     }
 
-    const user = jwt.verify(token);
-    
+    const user = jwt.verify(authorization);
+
     if (!user.id) {
       throw new Error("Unauthorized");
     }
@@ -17,8 +18,6 @@ export default (req, res, next) => {
 
     next();
   } catch (error) {
-    return res
-    .status(403)
-    .json({ error: error.message });
+    return res.status(403).json({ error: error.message });
   }
 };

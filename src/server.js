@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api", employer);
 app.use("/api", jobs);
 app.use('/api', worker);
-app.use("/api", application)
+app.use("/api", application);
 
 
 // error handler

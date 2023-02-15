@@ -1,5 +1,6 @@
 import { Employer, Job } from "../models/index.js";
 import jwt from "../utils/jwt.js";
+import { EmployerSchema, IdSchema } from "../utils/joi.js";
 
 const GET = async (req, res, next) => {
   try {
@@ -20,6 +21,12 @@ const GET = async (req, res, next) => {
 
 const GET_BYID = async (req, res, next) => {
   try {
+    const { error } = IdSchema.validate(req.params);
+    if (error) {
+      return res
+        .status(400)
+        .json({ error: "Bad Request", message: error.message });
+    }
     const { id } = req.params;
     const employer = await Employer.findOne({
       where: { id },
@@ -42,6 +49,14 @@ const GET_BYID = async (req, res, next) => {
 
 const REGISTER = async (req, res, next) => {
   try {
+    const { error } = EmployerSchema.validate(req.body);
+
+    if(error){
+      return res
+        .status(400)
+        .json({ error: "Bad Request", message: error.message });
+    }
+
     const employer = await Employer.create(req.body);
 
     res.status(201).json({
