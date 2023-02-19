@@ -1,4 +1,4 @@
-import { Employer, Job } from "../models/index.js";
+import { Application, Employer, Job, Worker } from "../models/index.js";
 import jwt from "../utils/jwt.js";
 import { EmployerSchema, IdSchema } from "../utils/joi.js";
 
@@ -51,7 +51,7 @@ const REGISTER = async (req, res, next) => {
   try {
     const { error } = EmployerSchema.validate(req.body);
 
-    if(error){
+    if (error) {
       return res
         .status(400)
         .json({ error: "Bad Request", message: error.message });
@@ -75,7 +75,6 @@ const LOGIN = async (req, res, next) => {
     const employer = await Employer.findOne({
       where: { name },
     });
-
     let isEmployer = employer?.validPassword(password);
 
     if (!isEmployer) {
@@ -85,8 +84,37 @@ const LOGIN = async (req, res, next) => {
     res.status(200).json({
       status: 200,
       message: "You have successfully logged in",
-      access_token: jwt.sign({ id: employer.id, role: 'employer' }),
+      access_token: jwt.sign({ id: employer.id, role: "employer" }),
     });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const GET_PROFILE = async (req, res, next) => {
+  try {
+    const { id, role } = req.user;
+    if (role === "employer") {
+      const employer = await Job.findAll({
+        include: [
+          {
+            model: Application,
+            include: [
+              {
+                model: Worker,
+                attributes: { exclude: ["createdAt", "updatedAt", "password"] },
+              },
+            ],
+            attributes: { exclude: ["updatedAt", "workerId", "jobId"] },
+          },
+        ],
+        where: { employerId: id },
+        attributes: { exclude: ["employerId"] },
+      });
+      res.status(200).json(employer);
+    } else {
+      throw new Error("you are not allowed");
+    }
   } catch (error) {
     return next(error);
   }
@@ -97,4 +125,5 @@ export default {
   LOGIN,
   REGISTER,
   GET_BYID,
+  GET_PROFILE,
 };

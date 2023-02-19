@@ -1,4 +1,4 @@
-import { Worker } from "../models/index.js";
+import { Application, Worker, Job, Employer } from "../models/index.js";
 import jwt from "../utils/jwt.js";
 import { WorkerSchema, IdSchema } from "../utils/joi.js";
 
@@ -83,9 +83,47 @@ const LOGIN = async (req, res, next) => {
   }
 };
 
+const GET_PROFILE = async (req, res, next) => {
+  try {
+    const { id, role } = req.user;
+    if (role === "worker") {
+      const application = await Worker.findAll({
+        include: [
+          {
+            model: Application,
+            attributes: { exclude: ["workerId", "jobId"] },
+            include: [
+              {
+                model: Job,
+                attributes: { exclude: ["employerId"] },
+                include: [
+                  {
+                    model: Employer,
+                    attributes: {
+                      exclude: ["createdAt", "updatedAt", "password"],
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        where: { id },
+        attributes: { exclude: ["createdAt", "updatedAt", "password"] },
+      });
+      res.status(200).json(application);
+    } else {
+      throw new Error("you are not allowed");
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
+
 export default {
   GET,
   REGISTER,
   GET_BYID,
   LOGIN,
+  GET_PROFILE,
 };

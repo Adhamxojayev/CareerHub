@@ -5,7 +5,7 @@ import { IdSchema, JobSchema } from "../utils/joi.js";
 const GET = async (req, res, next) => {
   try {
     const jobs = await Job.findAll({
-      attributes: { exclude: ['createdAt', 'updatedAt', 'employerId'] }
+      attributes: { exclude: ["createdAt", "updatedAt", "employerId"] },
     });
     res.status(200).json(jobs);
   } catch (error) {
@@ -15,8 +15,7 @@ const GET = async (req, res, next) => {
 
 const GET_FILTER = async (req, res, next) => {
   try {
-
-    const { title='', minSalary, maxSalary } = req.query;
+    const { title = "", minSalary, maxSalary } = req.query;
 
     const jobs = await Job.findAll({
       where: {
@@ -73,13 +72,13 @@ const POST = async (req, res, next) => {
     }
 
     const { id, role } = req.user;
-    if(role === 'employer'){
+    if (role === "employer") {
       req.body.employerId = id;
       const job = await Job.create(req.body);
 
       return res.status(200).json(job);
-    }else{
-      throw new Error("You do not have the required role to add a job")
+    } else {
+      throw new Error("You do not have the required role to add a job");
     }
   } catch (error) {
     return next(error);
@@ -90,6 +89,5 @@ export default {
   GET,
   POST,
   GET_BYID,
-  GET_FILTER
+  GET_FILTER,
 };
-
